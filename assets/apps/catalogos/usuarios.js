@@ -1,0 +1,103 @@
+var app_usuarios = extend({
+    model:'usuario',
+    url:'catalogos/usuarios',
+    combos:{
+        plaza_id:app.combos.plazas
+    },
+    view:{
+        id:'main_usuarios',
+        rows:[                        
+            {
+                cells:[
+                    {
+                        id:'win_usuarios',
+                        rows:[
+                            extend({
+                                css:'own_header',
+                                cols:[
+                                    {view:'label',label:'Usuarios'},                                    
+                                ]
+                            },'toolbar'),
+                            extend({ 
+                                id:'dt_usuarios',                                             
+                                columns:[                            
+                                    {id:'nombres',header:['Nombre',serverFilter],fillspace:true},                            
+                                    {id:'a_paterno',header:['Apellido paterno',serverFilter],fillspace:true},
+                                    {id:'a_materno',header:['Apellido materno',serverFilter],fillspace:true},
+                                ],
+                                on:{
+                                    onItemClick:function(id){
+                                        var item = this.getItem(id);
+                                        app_usuarios.tools.editId = item.id;
+                                    },
+                                    onItemDblClick:function(id){
+                                        var item = this.getItem(id);
+                                        app_usuarios.record(item.id);
+                                        app_usuarios.tools.setOption('record');
+                                    }
+                                }                                
+                            },'datatable')                            
+                        ]
+                    },
+                    {
+                        id:'win_usuario',
+                        rows:[   
+                            extend({
+                                css:'own_header',
+                                cols:[
+                                    {view:'label',label:'Usuario'},
+                                    extend({
+                                        click:function(){
+                                            app_usuarios.cancel();
+                                            app_usuarios.close_e();
+                                            app_usuarios.tools.unsetOptions();
+                                        }
+                                    },'dbutton'),
+                                    extend({
+                                        click:function(){                                            
+                                            app_usuarios.save();
+                                            app_usuarios.tools.unsetOptions();
+                                        }
+                                    },'sbutton'),
+                                ]
+                            },'toolbar'),
+                            extend({
+                                id:'frm_usuario',
+                                elements:[
+                                    {
+                                        cols:[
+                                            extend({label:'Plaza',name:'plaza_id',id:'usuario_plaza_id'},'rcombo'),
+                                        ]
+                                    },
+                                    {
+                                        cols:[
+                                            extend({label:'Nombre',name:'nombres'},'rtext'),
+                                            extend({label:'Apellido paterno',name:'a_paterno'},'rtext'),
+                                            extend({label:'Apellido materno',name:'a_materno'},'text'),
+                                        ]
+                                    },  
+                                    {
+                                        cols:[
+                                            extend({label:'Correo electrónico',name:'correo'},'text'),
+                                            extend({label:'Teléfono',name:'telefono'},'text'),
+                                            extend({label:'Celular',name:'celular'},'text'),
+                                        ]
+                                    },
+                                    {}
+                                ],
+                                rules:{
+                                    plaza_id:pNumber,
+                                    nombres:required,
+                                    a_paterno:required,
+                                    correo:notRequiredEmail,
+                                    telefono:notRequiredNumber,
+                                    celular:notRequiredNumber,
+                                }
+                            },'form')
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+},app_std);
